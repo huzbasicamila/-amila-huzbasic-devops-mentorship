@@ -1,7 +1,8 @@
 # TASK DESCRIPTION
 
 Za kompletiranje Task-8 potrebno je napraviti sljedece:
-IAM User 1 ce svoje resurse da kreira unutar eu-central-1 regiona.
+IAM User 1 ce svoje resurse da kreira unutar eu-central-1 .
+
 
  Od AMI image ec2-ime-prezime-web-server napravite novu EC2 instancu ec2-ime-prezime-task-8
 
@@ -186,6 +187,7 @@ komanda za izlistavanje svih rekorda asociranih sa hosted zonom
 >aws route53 list-resource-record-sets --hosted-zone-id Z3LHP8U                                                                         IUC8CDK --output json | jq -r '.ResourceRecordSets[].Name'
 
 
-10.  Koristeci openssl komande prikazati koji SSL certitikat koristite za vasu domenu i datum njegovog isteka.
+10.  Koristeci openssl komande prikazati koji SSL 
+certitikat koristite za vasu domenu i datum njegovog isteka.a
 
 11.  Kada zavrsite sa taskom kreirajte AMI image pod nazivom ami-ec2-ime-prezime-task-8 i terminirajte resurse koje ste koristili za izradu taska.

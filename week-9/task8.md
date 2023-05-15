@@ -186,8 +186,64 @@ komanda za izlistavanje svih rekorda asociranih sa hosted zonom
 
 >aws route53 list-resource-record-sets --hosted-zone-id Z3LHP8U                                                                         IUC8CDK --output json | jq -r '.ResourceRecordSets[].Name'
 
+* Korak jedan je da unutar ACM-a requestamo certifikat. 
+* Korak dva je da unesemo komandu: 
+>aws route53 change-resource-record-sets --hosted-zone-id Z3LHP8UIUC8CDK --change-batch '{"Changes":[{"Action":"CREATE","ResourceRecordSet":{"Name":"_de041442b7ff7bf10801006b71f6a92f.amila-huzbasic.awsbosnia.com.","Type":"CNAME","TTL":60,"ResourceRecords":[{"Value":"_ec262f184e2f36cb4eb86176475c0a0f.fcgjwsnkyp.acm-validations.aws."}]}}]}' 
+
+U ovoj naredbi, aws route53 change-resource-record-sets koristimo kako bismo promijenili DNS zapisne setove u Route 53. --hosted-zone-id Z3LHP8UIUC8CDK odnosi se na identifikator zone kojoj želimo promijeniti DNS zapis.
+
+U --change-batch parametru, koristimo JSON format za definiranje promjena koje želimo napraviti. U ovom slučaju, imamo jednu promjenu koju želimo izvršiti. Action je postavljen na "CREATE", što znači da želimo stvoriti novi DNS zapis. ResourceRecordSet sadrži informacije o novom DNS zapisu koji želimo stvoriti. Name određuje ime domena za koji želimo dodati DNS zapis. Type je tip DNS zapisa, u ovom slučaju "CNAME" (Canonical Name). TTL (Time to Live) je vremenski interval u sekundama tijekom kojeg će DNS zapis biti keširan. ResourceRecords sadrži vrijednost CNAME zapisa.
+
+* Korak 3 
+
+U dijelu LB idemo na opciju add listener. Dodajemo port 443 te izaberemo ACM registrovani certifikat. 
+
+* Korak 4 
+
+Ova naredba se koristi za brisanje postojećeg DNS zapisa tipa "A" (adresa) s odgovarajućim imenom i vrijednošću iz Zone u Route 53 usluzi. U ovom slučaju, DNS zapis s imenom "amila-huzbasic.awsbosnia.com." i IP adresom "3.65.35.162" će biti izbrisan.
+
+> aws route53 change-resource-record-sets --hosted-zone-id Z3LHP8UIUC8CDK --change-batch '{"Changes":[{"Action":"DELETE","ResourceRecordSet":{"Name":"amila-huzbasic.awsbosnia.com.","Type":"A","TTL":60,"ResourceRecords":[{"Value":"3.65.35.162"}]}}]}'
+
+Nakon toga kreiramo novi dns zapis.
+
+ Ova naredba se koristi za stvaranje novog CNAME DNS zapisa s odgovarajućim imenom i vrijednosti u Route 53 usluzi. U ovom slučaju, stvaramo CNAME DNS zapis s imenom "amila-huzbasic.awsbosnia.com." koji će se mapirati na "alb-asg-task8-1-856414661.eu-central-1.elb.amazonaws.com".
+
+>aws route53 change-resource-record-sets --hosted-zone-id Z3LHP8UIUC8CDK --change-batch '{"Changes":[{"Action":"CREATE","ResourceRecordSet":{"Name":"amila-huzbasic.awsbosnia.com.","Type":"CNAME","TTL":60,"ResourceRecords":[{"Value":"alb-asg-task8-1-856414661.eu-central-1.elb.amazonaws.com"}]}}]}'
+
+* Korak 5
+
+Ažuriramo node-app.conf file na sljedeći način 
+
+```server {
+  listen 80;
+  server_name aleksandra-ljuboje.awsbosnia.com;
+  location / {
+    proxy_pass http://127.0.0.1:8008;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+  }
+} 
+```
+
+* Korak 6
+
+Restartovati nginx 
+
+>systemctl restart nginx
 
 10.  Koristeci openssl komande prikazati koji SSL 
 certitikat koristite za vasu domenu i datum njegovog isteka.a
+Ova naredba koristi OpenSSL alat za dohvaćanje i prikazivanje informacija o certifikatu HTTPS veze.
 
-11.  Kada zavrsite sa taskom kreirajte AMI image pod nazivom ami-ec2-ime-prezime-task-8 i terminirajte resurse koje ste koristili za izradu taska.
+>echo | openssl s_client -showcerts -servername amila-huzbasic.awsbosnia.com -connect >.awsbosnia.com:443 2>/dev/null | openssl x509 -inform pem -noout -text
+
+![cli-certificate](/week-9/images/cli-certificate.PNG "cli-certificate")
+
+![amazon-https](/week-9/images/amazon-https.jpg "amazon https")
+
+11.  Kada zavrsite sa taskom kreirajte AMI image pod nazivom ami-ec2-ime-prezime-task-8 i terminirajte resurse koje ste koristili za izradu taska. 
+
+![terminateds](/week-9/images/terminated.png "terminated")

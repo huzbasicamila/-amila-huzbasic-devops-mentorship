@@ -48,3 +48,27 @@ Screenshot - distribution endpointa,
 Screenshot - R53 recorda koji je uspješno izvršio load distribucije,
 Screenshot konfigurisanoga R53 recorda prema distribuciji.
 Koristite AWS dokumentaciju ukoliko naiđete na bilo kakve probleme konfigurisanja CloudFronta sa R53.
+
+1. U tasku 9 je zadatak napraviti .html file koji ce prikazivati Vaše ime i prezime, kratki Vaš opis, te DevOps image koji koristimo od početka programa. HTML file uredite kako god želite (text, colors, fonts, etc.), nije bitno, ali da je preglednost u najmanju ruku okey.
+
+Naoravljeni .html fajlovi se nalaze unutar direktorija "html"
+
+* [index.html](./html/index.html) 
+* [error.html](./html/error.html)
+
+2. Potrebno je kreirati S3 bucket u formatu: ime-prezime-devops-mentorship-program-week-11, te omogućiti static website:
+
+* Dodati .html i error.html file,
+
+
+![uploaded files](/week-11/images/uploaded_files.PNG "uploaded files")
+
+* Podesiti bucket na public access, te dodati bucket policy koji će omogućiti samo minimalne access permissions nad bucketom.
+
+Više o bucket policy može se vijdeti [ovdje]("https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteAccessPermissionsReqd.html")
+
+
+![s3_bucket_policy](/week-11/images/s3_bucket_policy.PNG "s3_bucket_policy")
+
+Na slici ispod mozemo vijdeti .html file na s3 endpointu
+![s3_endpoint](/week-11/images/s3_endpoint.PNG "s3_endpoint")

@@ -246,4 +246,4 @@ Ova naredba koristi OpenSSL alat za dohvaćanje i prikazivanje informacija o cer
 
 11.  Kada zavrsite sa taskom kreirajte AMI image pod nazivom ami-ec2-ime-prezime-task-8 i terminirajte resurse koje ste koristili za izradu taska. 
 
-![terminateds](/week-9/images/terminated.png "terminated")
+![terminated](/week-9/images/terminated.PNG "terminated")

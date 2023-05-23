@@ -42,3 +42,7 @@ OSI MODEL opisuje sedam layera koji se koriste za komuniciranje kompjuterskih si
  ### Fizički sloj
 
  Fizicki sloj se bavi fizičkim prijenosom podataka preko fizičkog medija. Fizički sloj koristi različite medije za prijenos podataka, kao što su bakreni kablovi, optički kablovi ili bežične veze (poput WiFi-a). Svaki medij ima svoje karakteristike i metode prijenosa podataka. Fizički sloj se bavi različitim aspektima signalizacije, uključujući načine predstavljanja i prepoznavanja podataka putem električnih, svjetlosnih ili radijskih signala. Signalizacija može biti analogna (npr. električni naponi) ili digitalna (npr. binarni nizovi). Modulacija se koristi za prenošenje digitalnih podataka preko analognih medija. To uključuje pretvaranje digitalnih podataka u odgovarajući oblik analognog signala koji se može prenijeti preko fizičkog medija. Fizički sloj definira brzinu prijenosa podataka, koja se mjeri u bitovima po sekundi (bps).  Fizički sloj definira različite topologije mreže, poput magistralne, zvjezdaste, prstena ili mreže s više točaka pristupa. Ove topologije određuju način na koji su mrežni uređaji povezani preko fizičkog medija.
+
+ ## Protokoli
+
+ 

@@ -101,4 +101,48 @@ Ako se desi greska prilikom izvrsavanja Lambda funkcije, Lambda usluga automatsk
 
 Lambda funkcije mogu biti pozvane na 2 nacina: sinhrono i asinhrono. Sinhroni pozivi cekaju zavrsetak izvrsavanja funkcije i vracaju rezultat odmah. Asinhroni pozivi vracaju rezultat odmah dok se funkcija izvrsava u pozadini. 
 
+## CloudWatch Events i EventBridge
+
+Koriste se za upravljanje događajima i automatizaciju. 
+
+1. Cloud Watch Events:
+
+Omogućuju prancenje promjena i akcija u aws-u.
+
+Mozemo generisati evente tako sto cemo dodjeliti pravila (event rules) , izvore dogadaja (event sources ) i akcije. 
+
+Akcije definisu ono sta ce se desiti kada se event pokrene (izvrsavanje lambda funkcija, pokretanje ec2 instanci, izvodenje skripti).
+
+Omogućuje gledanje promjena u stvarnom vremenu, kao i integraciju sa drugim uslugama. 
+
+Cloud Watch Eventima se može upravljati preko AWS CLI-a.
+
+Koristi JSON format za prestavljanje dogadaja. Neki od atributa koje koristi su: 
+
+* Version: verzija formata
+* ID: id dogadaja
+* DetailType: vrsta dogadaja 
+* Source: izvor dogadaja. usluga koja generise dogadaj.
+* Time: kada se dogodilo
+* Resources: resursi koji su povezani sa dogadajem
+* Detal: specificne informacije za dogadaj. 
+
+AWS Cloud Events omogućuje stvaranje inteligentnih automatizacija.
+
+2. EventBridge
+
+Usluga koja se gradi na Cloud Eventu i pruza naprednije usluge. 
+
+Omogućava prikupljanje dogadaja iz third party aplikacija za obradivanje u AWS-u.
+
+Pruza naprednije mogucnosti filtriranja u odnosu na AWS Cloud Events.
+
+Ima napredniju logiku, te omogucuje definisanje slozenijih pravila.
+
+Omogucuje prikupljanje i generisanje velikog broja dogadaja iz razlicitih izvora.
+
+
+
+
+
 

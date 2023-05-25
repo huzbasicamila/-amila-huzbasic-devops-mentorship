@@ -1,0 +1,104 @@
+# Task 10
+## Week 12
+### Date: 23.05.2023
+
+
+# Arhictecture Deep Dive 
+
+### Event-Driven Architecture (EDA)
+
+EDA  je važna za projektovanje sistema jer pruža efektivan i skalabilan pristup dizajniranju sistema. 
+
+1. Upravljanje kompleksnosti- EDA omogućava razbijanje većih kompleksnih sistema, na manje jednostavnije komponente koje nazivamo mikroservisima. 
+2. U event driven sistemima, komponente komuniciraju preko događaja. Događaj predstavlja neku značajnu promjenu ili akciju koja se dešava unutar sistema npr. klik na dugme, ažuriranje podataka u bazi i slično. Loose coupling je karakteristika EDA arhitekture. Tu komponente nisu vezane jedna sa drugom već komuniciraju putem razmjene događaja. 
+3. Skalabilnost i performanse- EDA omogućava horizontalnu skalabilnost što znaći da pojedinaćne komponente mogu skalirati po potrebi. Ovakva fleksibilnost omogućava da dodamo resurse samo tamo gdje su potrebni. 
+4. Reagovanje: EDA omogućava realno vrijeme reagovanja na događaje, te je obrada i donošenje odluka dosta brže. 
+5. Skalabilnost: nove komponente se mogu dodati bez narušavanja ostalih
+
+### Tiered Architecture
+
+Tiered Arhitektura je evolucija monolitne arhitekture, gdje se monolit razbija u različite kolekcije slojeva (tier-a) pri čemu svaki sloj može da bude na različitim serverima, ili na istom, potpuno je nebitno. 
+
+Omogućava: 
+1. Nezavisno skaliranje: Svaki sloj može da skalira vertikalno. Resursi se mogu dodavati specifično u svaki sloj u zavisnosti od potreba. 
+2. Korištenje load balancera: Umjesto direktnog povezivanja sa slojevima, koriste se load balanceri. Korištenjem njega dodatne instance se mogu dodavati, po potrebi, te se sva komunikacija vrši preko njih. 
+
+Nedostaci:
+1. Međusobna zavisnost slojeva: Slojevi su i dalje međusobno povezani
+2. Nepotrebno opterećenje: Može dovesti do neeefikasnog korištenja resursa. 
+
+### Queues
+
+Korištenje redova (queues) je koncept u kojem se redovi koriste za komunikaciju između komponenti sistema. Koriste FIFO princip (fisrt in first out). Umjesto da komponente direktno komuniciraju jedna sa drugom, one ulaze u redove te se potom izvlače i obrađuju od strane odgovarajućih komponenti. 
+
+Mogučnosti:
+1. Dodavanje poruka u red: komponente mogu dodavati poruke u red, koje predstavljaju podatke i zadatke koje je potrebno uraditi. 
+2. Uklanjanje poruka iz reda: komponente i procesi mogu čitati zadatke sa početka reda. Kada se poruka izvuče ona se obično obrađuje i koristi u drugim procesima. 
+3. Asinkrona veza: redovi omogućavaju komponentama da komuniciraju nezavisno i bez direktnog znanja jedna o drugoj.
+4. Skalabilnost: redovi omogućavaju horizontalno skaliranje jer se poruke mogu izvršavati paralelno na više instanci. (autoscaling grupe)
+5. Otpornost na opterećenje: redovi mogu da skladište poruke kada je neka komponenta preopterećena ili nedostupna, čime se sprječava gubitak podataka. 
+
+### Event-Driven Architecture
+
+U ovoj vrsti arhitekture, sve komponente komuniciraju putem događaja. 
+Događaji su promjene ili pojave unutar sistema. 
+
+Korištenjem ove arhitekture, komponente ne moraju međusobno da komuniciraju, već koriste događaje koji se nalaze u redovima. Tako se smanjuje zavisnost između komponenti. 
+
+Također omogučava i skalabilnost tj horizontalno skaliranje pojedinih komponenti, jer se događaji mogu izvršavati paralelno na više instanci. Otporna je na opterećenja. 
+
+# AWS Lambda
+
+AWS Lambda je usluga koja omogućava izvršavanje programskog koda bez brige o infrastrukturi (njezinom postavljanju i upravljanju), AWS se brine o tome. 
+
+Ona omogućava pisanje koda u različitim jezicima kao što su Phyton, Ruby, C#, NODE, Java i slicno.
+
+Lambda funkcije se ne izvršavaju stalno, nego samo kada je to potrebno. Funkcija se izvršava na temelju događaja koje definišemo (promjene u S3 bucketu, porukom iz queue-a, HTTP requestom ili vremenskim okicacima). 
+
+AWS Lambda funkcija se naplaćuje na temelju broja izvršenih funkcija i vremena utrošenog da se te funkcije izvrše. Za neaktivnost se ne naplaćuje.
+
+AWS Lambda omogućava upravljanje verzijama funkcija. To omogućava recimo testiranje novih funkcija prije nego što se postave u produkcijsko okruženje. 
+
+Lako se može upravljati konfifuracijama postavki funkcija kao što su vremensko ogranicenje, memorija i slicno preko AWS CLI. 
+
+ Lambda funkcije se lako integrisu sa drugim uslugama.
+
+## Velicina paketa funkcije je ogranicena na 250MB. 
+
+Ako je paket veci funkcija se ne moze ucitati tada radimo jednu od dvije navedene stvari: 
+* Lokalna ugradnja: biblioteku preuzimamo na racunar te je ugradimo sa kodom u .zip arhivu a pritom je ugradimo u AWS Lambdu, tada ce funkcija imati sve sta joj je potrebno. 
+* Spremanje u S3 Bucket: Umjesto da ga ugradujemo u .zip arhivu, mozemo je spremiti u S3 Bucket te koristiti druge alate (AWS SDK, AWS CLI) da izvuku biblioteku i koriste je u funkciji. 
+
+Koji od ova dva nacina ce se koristiti zavisi od potreba projekta, nema univerzalnog odgovora koji je efikasniji. 
+
+Ako je paket velik i cesto se mijenja u tom slucaju efikasnije je spremiti ga u s3 bucket, jer na taj nacin se smanjuje otpremanje cjelokupnog paketa prilikom svake promjene. 
+
+Lokalna ugradnja pruza brze vrijeme preuzimanja jer se paket nalazi na lokalnom racunaru i ne mora se povlaciti iz S3 Bucketa. 
+
+
+Vremensko vrijeme ogranicavanja lambda funkcije je 900s(15minuta). 
+
+Lambda omogucuje koristenje env-ova. To omogućuje da unaprijed definisemo vrijednosti i koristimo ih tijekom izvrsavanja funkcije. Korisno je kada se radi o osjetljivim podacima. 
+
+Lambda Layers: Oni omogućuju dijeljenje koda ,biblioteka i resursa između više funkcija. Smanjuje dupliciranje koda. 
+
+Integracija sa X-Rayom. Lambda funkcije se mogu integrisati sa X-Rayom kako bi se olaksalo pracenje performansi i pronalazenje problema. 
+
+## VPC INTEGRACIJA
+
+VPC- Virtual Private Cloud.
+
+To je virtuelna mreža na cloudu koja omogucava da se izloriaju i kontrolisu resursi u aws-u. 
+
+Kada se Lambda integrise sa VPC-om, omogućava joj se pristup unutar nase privatne mreze, te ona moze komunicirati sa drugim resursima (baza podataka i slicno). 
+Ovakav vid dize razinu sigurnosti jer lambda funkcija moze da pristupi samo resursima koji su joj dostupni unutar VPC mreze. 
+
+Cloud Watch prikuplja informacije kao sto su broj izvrsavanja, vrijeme izvrsavanja, kolicina rezervisane memorije i slicno za Lambda funkcije. 
+
+Cloud Watch Logs - tu se lambda logovi generisu.
+
+Ako se desi greska prilikom izvrsavanja Lambda funkcije, Lambda usluga automatski pokusava ponovo je izvrsiti. Broj ponovnih izvrsavanja i vremensko ogranicenje izmedu njih se moze konfigurisati. 
+
+Lambda funkcije mogu biti pozvane na 2 nacina: sinhrono i asinhrono. Sinhroni pozivi cekaju zavrsetak izvrsavanja funkcije i vracaju rezultat odmah. Asinhroni pozivi vracaju rezultat odmah dok se funkcija izvrsava u pozadini. 
+
+

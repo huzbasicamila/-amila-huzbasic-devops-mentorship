@@ -168,5 +168,78 @@ Filtri poruka: SNS sadrži mogućnost filtriranja poruka, tako da se može posta
 
 Obavijesti o dostavi: SNS ima mogućnost primanja obavijestenja o dostavi putem Cloud Watcha i SNS DS teme. 
 
+# Pet Cuddle-o-Tron mini project
 
+Ova web aplikacija je napravljena koristeći Step funkcije, Lambda, API Gateway i S3 Static Web Hosting.
 
+![petcuddleotrondiagram](images/petcuddleotron-diagram.png)
+
+Steps: 
+1. Creating SES
+2. Verifikacija emaila
+
+![petcuddleotronemails](images/petcuddleotron-verified-emails.png)
+
+3. Creating email reminder lambda function
+
+![petcuddleotronamilambda](images/petcuddleotron-ami-lambdarole.png)
+
+Koristimo kod [email_reminder_lamdba.py](demo_code/email_reminder_lambda.py)
+
+4. State machine
+
+![petcuddleotronstepfunctions](images/petcuddleotron-stepfunctions.png)
+
+``` 
+{
+  "Comment": "Pet Cuddle-o-Tron - using Lambda for email.",
+  "StartAt": "Timer",
+  "States": {
+    "Timer": {
+      "Type": "Wait",
+      "SecondsPath": "$.waitSeconds",
+      "Next": "Email"
+    },
+    "Email": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "arn:aws:lambda:us-east-1:485372674658:function:email_reminder_lambda",
+        "Payload": {
+          "Input.$": "$"
+        }
+      },
+      "Next": "NextState"
+    },
+    "NextState": {
+      "Type": "Pass",
+      "End": true
+    }
+  }
+}
+
+```
+
+![graph-view](images/graph-view.PNG)
+
+4. Creating email reminder lambda function
+
+![petocuddlelambda](images/petocuddle-lambda-functions.PNG)
+
+Koristimo kod: [api_lamdba.py](demo_code/api_lambda.py)
+
+5. Kreiranje REST API, resursa i POST METODE
+
+![petcuddleotronapi](images/petcuddleotron-api.PNG)
+
+Deploy API to prod.
+
+6. Aplikacija
+
+![petcuddleotron](images/petcuddleotron-application.PNG)
+
+7. Testiranje success
+
+![petcuddleotron](images/petcuddleotron-application-test-success.PNG)
+
+![petcuddleotron](images/petcuddleotron-application-test-success-logs.PNG)

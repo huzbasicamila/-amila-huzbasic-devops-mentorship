@@ -142,7 +142,31 @@ Ima napredniju logiku, te omogucuje definisanje slozenijih pravila.
 Omogucuje prikupljanje i generisanje velikog broja dogadaja iz razlicitih izvora.
 
 
+# Serverless Architecture
 
+Serverless je način izgradnje i upravljanja aplikacijama bez da imamo potrebu da se brinemo o infrastrukturama i serverima. 
+
+FaaS (Function as a service)- glavi gradivni blok serverless arhitekture. 
+
+Imaju okidače: okidači su događaji koji pokreću izvršavanje funkcije. To mogu biti HTTP zahtjevi, promjene koje se dešavaju na nekom drugom servisu i slicno. 
+
+Naplata: naplata se vrši po potrošnji resursa. 
+
+# SNS (Simple Notification Service)
+
+SNS je usluga za slanje poruka i obavjesti. 
+
+Topic: tema za slanje poruka u SNS-u. Moze se stvoriti tema za poseban dogadaj. Kada se pošalje poruka na temu, SNS dostavlja poruku svim subscriberima.
+
+Subscriber: to su primatelji koji primaju poruke. Moze biti email, broj, HTTP endpoint, Lambda funkcija i sl. 
+
+Publisher: entitet koji šalje poruku na SNS temu. Može biti aplikacija, neka druga usluga ili bilo koji izvor. 
+
+Acknowledgment Mechanisms: SNS koristi mehanizme za potrvrdu isporuke i obrade poruke. 
+
+Filtri poruka: SNS sadrži mogućnost filtriranja poruka, tako da se može postaviti ograničenje da npr samo određeni pretplatnici dobijaju obavijesti.
+
+Obavijesti o dostavi: SNS ima mogućnost primanja obavijestenja o dostavi putem Cloud Watcha i SNS DS teme. 
 
 
 

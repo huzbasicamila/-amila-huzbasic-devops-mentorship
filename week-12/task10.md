@@ -243,3 +243,59 @@ Deploy API to prod.
 ![petcuddleotron](images/petcuddleotron-application-test-success.PNG)
 
 ![petcuddleotron](images/petcuddleotron-application-test-success-logs.PNG)
+
+
+# Simple Queue Service (SQS)
+
+AWS Simple Queue Service (SQS) je usluga koja omogućuje slanje i primanje poruka između različitih dijelova aplikacija. 
+
+Kako SQS radi?
+
+ Koristi red za pohranu poruka koje se trebaju obraditi, a zatim poseban program čita i obrađuje te poruke.
+
+## Primjer: 
+web aplikacija za slanje email-a:
+
+Kada korisnik pošalje e-poštu, umjesto da je odmah šaljete, stavljate je u poseban "sandučić" nazvan "EmailQueue".
+
+Zatim imate poseban program koji čita e-pošte iz tog sandučića i šalje ih stvarnim primateljima. Taj program radi odvojeno od same web aplikacije kako bi se fokusirao samo na slanje e-pošte.
+
+Kada program primi e-poštu iz sandučića, šalje je primatelju i potom uklanja iz sandučića.
+
+Ako se dogodi neka pogreška prilikom slanja e-pošte, e-pošta se može vratiti natrag u sandučić kako bi se pokušala ponovno poslati kasnije.
+
+Ključne stvari za SQS:
+
+1. Pouzdanost: poruke ce biti sigurno smještene u red
+
+2. Skalabilnost: Može se prilagoditi različitim opterećenjima. Redovi se prilagodavaju velikom broju poruka.
+
+3. Asinkrona komunikacija: SQS omogućuje asinkronu komunikaciju između komponenti aplikacija. To znači da se pošiljatelji poruka i primatelji poruka ne moraju međusobno sinkronizirati, što olakšava razvoj skalabilnih i otpornih aplikacija.
+
+4. Redoslijed isporuke: FIFO redovi (First-In-First-Out) osiguravaju da se poruke isporučuju primateljima točno jedanput i u istom redoslijedu u kojem su poslane. 
+
+5. Vidljivost poruka: Kada se poruka pošalje na red, postaje vidljiva primateljima. Primatelji mogu preuzeti i obraditi poruku, a tijekom tog procesa poruka postaje nevidljiva za ostale primatelje. To sprječava da se poruka obradi više puta.
+
+6. Vremenski raspon zadržavanja: Možete konfigurirati vremenski period zadržavanja poruke u redu. Ako primatelj ne obradi poruku unutar tog vremenskog raspona, poruka se može ponovno poslati na obradu ili se može preusmjeriti na drugi red.
+
+7. Integracija s drugim AWS uslugama: SQS se lako integrira s drugim AWS uslugama poput AWS Lambda, Amazon S3 i Amazon EC2. To omogućuje izgradnju složenih aplikacija koje koriste različite servise zajedno.
+
+IAM Policy : 
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sqs:SendMessage",
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage"
+      ],
+      "Resource": "arn:aws:sqs:region:account-id:queue-name"
+    }
+  ]
+}
+```
+Primjer IAM policy-a za slanje, brisanje i primanje poruka sa određenog reda. 
+

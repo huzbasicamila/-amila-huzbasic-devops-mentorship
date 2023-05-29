@@ -255,4 +255,145 @@ Nakon toga sve je proslo uspjesno:
 
 ![master](images/master-branch.PNG)
 
+Naredni error koji sam dobila bio je na pipeline-u
+
+![error_pipeline](images/pipeline_error.PNG)
+
+Editovala sam file buildspecs.yaml te promjene ponovo commitala i pushala. 
+
+Pipeline je prosao uspjesno
+
+![pipeline_success](images/pipeline_success.PNG)
+
+![primjer](images/primjer_apk.PNG)
+
+# Lambda
+
+U ovom dijelu koristimo Lambda funkciju kako bi kreirali codepipeline i elasticbeanstalk kada se branch napravi.
+
+Koristimo komandu:
+
+> aws cloudformation create-stack --template-body file://lambda/lambda-create.yaml --stack-name gitflow-workshop-lambda --capabilities CAPABILITY_IAM
+
+
+Nakon toga dobijamo error
+
+![lambda_error](images/lambda_error.PNG)
+
+Kako bi riješili ovaj problem potrebno je 
+  
+  * Otici u S3 bucket, kopirati ime bucketa koji pocinje sa elasticbeanstalk... te u lambda-create.yaml kroz Cloud9 terminal, izmjeniti S3Bucket
+  * Za isti bucket unutar S3 konzole, otici na dio Permission, Edit default encryption - izabrati KMS enkripciju, izabrati aws/s3 kljuc, kopirati key arn unutar txt fajla na desktopu. Naziv fajla .kljuc. Zipovati fajl u kljuc.zip
+  * Postaviti zip file na s3 bucket
+  * Promijeniti unutar Cloud9 enviromenta iam policy na "AWSCodePipeline_FullAccess"
+
+  Kada smo uradili gore navedeno Pipeline Deployment je uspješno prošao:
+
+  ![pipeline_lambda_success](images/pipeline_lambda_success.PNG)
+
+  ![lambda_pipeline](images/lambda_pipeline.PNG)
+
+  ### AWS CodeCommit Trigger
+  
+  Kreirani su triggeri u CodeCommitu koji se "bude" kada se pozove lambda funkcija:
+
+
+  ![triggers](images/triggers.PNG)
+
+  ## Develop Branch
+
+  Prilikom koristenja git flow extention biblioteke, koristimo naredbu 
+  ```
+  git flow init 
+  ```
+  kako bi kreirali develop branch
+
+
+  ![gitflow](images/gitflow_init.PNG)
+
+  Kod za manuelno kreiranje branch-a:
+
+  ```
+   aws cloudformation create-stack --template-body file://envcreate.yaml --parameters file://parameters-dev.json --capabilities CAPABILITY_IAM --stack-name gitflow-workshop-develop
+
+   ```
+
+   ![develop_branch](images/develop_branch.PNG)
+
+
+Automatski se kreira i develop pipeline
+
+![develop_pipeline](images/develop_pipeline.PNG)
+
+## Feature Branch
+
+> git flow feature start change-color
+
+> Na liniji 38 mijenjamo koju sa purple na green
+
+> git add -A   
+
+> git commit -m " Change color "
+
+> git push --set-upstream origin feature/change-color
+
+![changecolor_pipeline](images/changecolor_pipeline.PNG)
+
+Aplikacija na feature branchu:
+
+![app_featurebranch](images/app_featurebranch.PNG)
+
+Aplikacija na develop branchu: 
+
+![primjer_apk](images/primjer_apk.PNG)
+
+Potrebno je izmjene sa feature brancha pushat na develop branch:
+
+> git flow feature finish change-color
+
+> git push origin --delete feature/change-color  
+
+> git push --set-upstream origin develop
+
+Promjene mozemo pushati i manuelno unutar CodePipeline-a klikom na dugme "Relase Change"
+
+
+# Cleanup
+
+## Delete Develop & Master Environments
+```
+aws cloudformation delete-stack --stack-name gitflow-eb-master
+
+aws cloudformation delete-stack --stack-name gitflow-workshop-develop
+```
+## Delete Feature Environment
+```
+aws cloudformation delete-stack --stack-name gitflow-workshop-feature-change-color
+```
+### Delete Lambda Functions
+
+```
+aws cloudformation delete-stack --stack-name gitflow-workshop-lambda
+```
+
+### Delete Elastic Beanstalk Application
+
+
+```bash
+aws cloudformation delete-stack --stack-name gitflow-eb-app
+```
+
+### Delete code commit repository
+
+```bash
+aws codecommit delete-repository --repository-name gitflow-workshop
+```
+
+### Delete AWS Cloud9
+I* n the AWS Cloud9  console, highlight your Cloud9 workspace
+* Select Delete
+
+
+
+
 

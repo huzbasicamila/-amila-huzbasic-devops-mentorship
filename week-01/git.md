@@ -64,6 +64,8 @@ Potrebno je kopirati content iz id_*.pub fajla i paste-ati ga unutar GitHuba, Gi
 
 * git branch -b nova-grana - komanda koja kreira i prebacuje se na novu granu
 
+* git branch -d branch_name - brisnaje grane
+
 * git checkout nova-grana - komanda koja prebacuje na drugu granu
 
 * git reset <filePath> - komanda za unstageane fajla koji se nalazi u version controlu
